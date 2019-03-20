@@ -10,10 +10,11 @@ in the Linux 3.8 kernel. \
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=e28f66b16cb46be47b20a4cdfe6e99a1"
 
-DEPENDS_append += "\
-    help2man-native openssl-native sbsigntool-native \
-    libfile-slurp-perl-native \
-"
+#DEPENDS_append += "\
+#    help2man-native openssl-native sbsigntool-native \
+#"
+# libfile-slurp-perl-native
+
 
 PV = "1.7.0+git${SRCPV}"
 
@@ -37,7 +38,7 @@ PARALLEL_MAKE = ""
 
 S = "${WORKDIR}/git"
 
-inherit perlnative
+#inherit perlnative
 
 EXTRA_OEMAKE = "\
     HELP2MAN='${STAGING_BINDIR_NATIVE}/help2man' \
@@ -52,13 +53,13 @@ EXTRA_OEMAKE_append_x86-64 += " ARCH=x86_64"
 
 EFI_BOOT_PATH = "/boot/efi/EFI/BOOT"
 
-do_compile_prepend() {
-    sed -i -e "1s:#!.*:#!/usr/bin/env nativeperl:" xxdi.pl 
-}
+#do_compile_prepend() {
+#    sed -i -e "1s:#!.*:#!/usr/bin/env nativeperl:" xxdi.pl
+#}
 
-do_install() {
-    oe_runmake install DESTDIR='${D}${base_prefix}'
-}
+#do_install() {
+#    oe_runmake install DESTDIR='${D}${base_prefix}'
+#}
 
 FILES_${PN} += "${EFI_BOOT_PATH}"
 

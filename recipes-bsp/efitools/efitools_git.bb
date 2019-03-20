@@ -1,7 +1,8 @@
 require efitools.inc
 
 # The generated native binaries are used during native and target build
-DEPENDS += "${BPN}-native gnu-efi openssl"
+#DEPENDS += "${BPN}-native gnu-efi openssl"
+DEPENDS += "gnu-efi openssl"
 
 SRC_URI_append += "\
     file://LockDown-enable-the-enrollment-for-DBX.patch \
@@ -14,7 +15,8 @@ SRC_URI_append += "\
 
 COMPATIBLE_HOST = '(i.86|x86_64).*-linux'
 
-inherit user-key-store deploy
+#inherit user-key-store deploy
+#inherit deploy
 
 EXTRA_OEMAKE_append += "\
     INCDIR_PREFIX='${STAGING_DIR_TARGET}' \
@@ -64,20 +66,43 @@ python do_prepare_signing_keys() {
         time_stamp = time.mktime(tm)
         os.utime(d.expand('${S}/DBX.esl'), (time_stamp, time_stamp))
 }
-addtask prepare_signing_keys after do_configure before do_compile
-do_prepare_signing_keys[prefuncs] += "check_deploy_keys"
+#addtask prepare_signing_keys after do_configure before do_compile
+#do_prepare_signing_keys[prefuncs] += "check_deploy_keys"
 
-do_install_append() {
-    install -d ${D}${EFI_BOOT_PATH}
-    install -m 0755 ${D}${datadir}/efitools/efi/LockDown.efi ${D}${EFI_BOOT_PATH}
+#do_install_append() {
+#    install -d ${D}${EFI_BOOT_PATH}
+#    install -m 0755 ${D}${datadir}/efitools/efi/LockDown.efi ${D}${EFI_BOOT_PATH}
+#}
+
+#do_deploy() {
+#    install -d ${DEPLOYDIR}
+#
+#    install -m 0600 ${D}${EFI_BOOT_PATH}/LockDown.efi "${DEPLOYDIR}"
+#}
+#addtask deploy after do_install before do_build
+
+do_compile() {
+	oe_runmake cert-to-efi-sig-list
+	oe_runmake sig-list-to-certs
+	oe_runmake sign-efi-sig-list
+	oe_runmake hash-to-efi-sig-list
+	oe_runmake efi-readvar
+	oe_runmake efi-updatevar
+	oe_runmake cert-to-efi-hash-list
+	oe_runmake efi-keytool
 }
 
-do_deploy() {
-    install -d ${DEPLOYDIR}
-
-    install -m 0600 ${D}${EFI_BOOT_PATH}/LockDown.efi "${DEPLOYDIR}"
+do_install() {
+	install -d ${D}${bindir}
+	install -m 0755 ${S}/cert-to-efi-sig-list ${D}${bindir}
+	install -m 0755 ${S}/sig-list-to-certs ${D}${bindir}
+	install -m 0755 ${S}/sign-efi-sig-list ${D}${bindir}
+	install -m 0755 ${S}/hash-to-efi-sig-list ${D}${bindir}
+	install -m 0755 ${S}/efi-readvar ${D}${bindir}
+	install -m 0755 ${S}/efi-updatevar ${D}${bindir}
+	install -m 0755 ${S}/cert-to-efi-hash-list ${D}${bindir}
+	install -m 0755 ${S}/efi-keytool ${D}${bindir}
 }
-addtask deploy after do_install before do_build
 
 RDEPENDS_${PN}_append += "\
     parted mtools coreutils util-linux openssl libcrypto \
