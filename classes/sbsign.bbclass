@@ -4,7 +4,9 @@
 # SECURE_BOOT_SIGNING_KEY
 #
 
-DEPENDS += "sbsigntool-native"
+do_sbsign[depends] += " \
+                        sbsigntool-native:do_populate_sysroot \
+                       "
 
 python do_sbsign() {
    import subprocess
