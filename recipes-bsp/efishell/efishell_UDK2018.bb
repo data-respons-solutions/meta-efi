@@ -26,8 +26,6 @@ do_deploy() {
 	:
 }
 
-SECURE_BOOT_SIGNING_KEY ?= "/opt/oe/oe-system-test/meta-efi/recipes-security/uefi-keys/db.key"
-SECURE_BOOT_SIGNING_CERT ?= "/opt/oe/oe-system-test/meta-efi/recipes-security/uefi-keys/db.crt"
 
 do_deploy_x86-64() {
 	install -m 0644 ${S}/ShellBinPkg/UefiShell/X64/Shell.efi ${DEPLOYDIR}/shell_x64.efi
