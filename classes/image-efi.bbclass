@@ -1,4 +1,4 @@
-inherit image
+inherit image sbsign
 
 do_image_efi[depends] += " \
 					     ${INITRD_IMAGE}:do_image_complete \
@@ -7,11 +7,13 @@ do_image_efi[depends] += " \
                        "
 do_image_efi[vardeps] +=  "IMAGE_LINK_NAME IMAGE_VERSION_SUFFIX KERNEL_IMAGETYPE INITRD_IMAGE APPEND"
 
+EFI_IMAGE_NAME = "${IMAGE_LINK_NAME}${IMAGE_VERSION_SUFFIX}.efi"
+SECURE_BOOT_SIGNING_FILES += "${IMGDEPLOYDIR}/${EFI_IMAGE_NAME}"
+
 IMAGE_CMD_efi() {
 	cmdline="cmdline.txt"
 	kernel="${KERNEL_IMAGETYPE}"
 	initrd="${INITRD_IMAGE}-${MACHINE}.cpio.gz"
-	efi="${IMAGE_LINK_NAME}${IMAGE_VERSION_SUFFIX}.efi"
 
 	mkdir -p ${B}
 	echo "${APPEND}" > ${B}/${cmdline}
@@ -23,7 +25,16 @@ IMAGE_CMD_efi() {
     --add-section .linux="${B}/${kernel}" --change-section-vma .linux=0x40000 \
     --add-section .initrd="${B}/${initrd}" --change-section-vma .initrd=0x3000000 \
     ${DEPLOY_DIR_IMAGE}/linuxx64.efi.stub \
-    ${IMGDEPLOYDIR}/${efi}
+    ${IMGDEPLOYDIR}/${EFI_IMAGE_NAME}
     
-    ln -sf ${efi} ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.efi
+    ln -sf ${EFI_IMAGE_NAME} ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.efi
 }
+
+do_image_efi_signed_link() {
+    if [ -f ${IMGDEPLOYDIR}/${EFI_IMAGE_NAME}.signed ]; then
+    	ln -sf ${EFI_IMAGE_NAME}.signed ${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.efi.signed
+    fi
+}
+
+addtask do_sbsign after do_image_efi before do_image_complete
+addtask do_image_efi_signed_link after do_sbsign before do_image_complete
