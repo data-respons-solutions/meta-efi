@@ -1,25 +1,40 @@
 FILESEXTRAPATHS_append := "${THISDIR}/${PN}:"
 
-do_compile_append() {
-	ninja src/boot/efi/linuxx64.efi.stub
-}
-
-COMPATIBLE_HOST = "x86_64"
+SYSTEMD_BOOT_EFI_IMAGE = "${@bb.utils.contains('TARGET_ARCH', 'x86_64', 'bootx64.efi', 'bootia32.efi',d)}"
+SYSTEMD_BOOT_EFI_STUB = "${@bb.utils.contains('TARGET_ARCH', 'x86_64', 'linuxx64.efi.stub', 'linuxia32.efi.stub',d)}"
 
 SRC_URI += 	" \
     file://loader.conf \
     file://efi.conf \
     file://linux.conf \
 "
+do_compile() {
+	ninja src/boot/efi/systemd-${SYSTEMD_BOOT_EFI_IMAGE}
+	ninja src/boot/efi/${SYSTEMD_BOOT_EFI_STUB}	
+}
 
-do_deploy_x86-64 () {
+do_install() {
+	install -d ${D}/boot
+	install -d ${D}/boot/EFI
+	install -d ${D}/boot/EFI/BOOT
+	install ${B}/src/boot/efi/systemd-${SYSTEMD_BOOT_EFI_IMAGE} ${D}/boot/EFI/BOOT/${SYSTEMD_BOOT_EFI_IMAGE}
+	
+	install -d ${D}/${systemd_unitdir}
+	install -d ${D}/${systemd_unitdir}/boot
+	install -d ${D}/${systemd_unitdir}/boot/efi
+	install ${B}/src/boot/efi/${SYSTEMD_BOOT_EFI_STUB} ${D}/${systemd_unitdir}/boot/efi
+	ln -s ${SYSTEMD_BOOT_EFI_STUB} ${D}/${systemd_unitdir}/boot/efi/linux.efi.stub
+}
+
+FILES_${PN}-dev += "${systemd_unitdir}/boot/efi/*"
+
+do_deploy() {
 	install -d ${DEPLOYDIR}/EFI
 	install -d ${DEPLOYDIR}/EFI/BOOT
-	install -m 0644 ${B}/src/boot/efi/systemd-bootx64.efi ${DEPLOYDIR}/EFI/BOOT/${SYSTEMD_BOOT_IMAGE}
-	if [ -f ${B}/src/boot/efi/systemd-bootx64.efi.signed ]; then
-		install -m 0644 ${B}/src/boot/efi/systemd-bootx64.efi.signed ${DEPLOYDIR}/EFI/BOOT/${SYSTEMD_BOOT_IMAGE}.signed
+	install ${B}/src/boot/efi/systemd-${SYSTEMD_BOOT_EFI_IMAGE} ${DEPLOYDIR}/EFI/BOOT/${SYSTEMD_BOOT_EFI_IMAGE}
+	if [ -f ${B}/src/boot/efi/systemd-${SYSTEMD_BOOT_EFI_IMAGE}.signed ]; then
+		install ${B}/src/boot/efi/systemd-${SYSTEMD_BOOT_EFI_IMAGE}.signed ${DEPLOYDIR}/EFI/BOOT/${SYSTEMD_BOOT_IMAGE}.signed
 	fi
-	install -m 0644 ${B}/src/boot/efi/linuxx64.efi.stub ${DEPLOYDIR}/linuxx64.efi.stub
 	
 	install -d ${DEPLOYDIR}/loader
 	install -m 0644 ${WORKDIR}/loader.conf ${DEPLOYDIR}/loader/loader.conf
@@ -30,16 +45,12 @@ do_deploy_x86-64 () {
 	done
 }
 
-do_deploy() {
-	:
-}
-
 RDEPENDS_${PN}_remove = "virtual/systemd-bootconf"
 
 inherit sbsign
 
 SECURE_BOOT_SIGNING_FILES = "\
-	${@bb.utils.contains('HOST_ARCH','x86_64','${B}/src/boot/efi/systemd-bootx64.efi','',d)} \
+	${B}/src/boot/efi/systemd-${SYSTEMD_BOOT_EFI_IMAGE} \
 "
 
 addtask do_sbsign after do_compile before do_deploy
