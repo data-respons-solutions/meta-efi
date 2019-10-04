@@ -14,6 +14,7 @@ python do_sbsign() {
    key = d.getVar('SECURE_BOOT_SIGNING_KEY', True)
    cert = d.getVar('SECURE_BOOT_SIGNING_CERT', True)
    if cert == None or key == None:
+      bb.warn('Files {} not signed'.format(d.getVar('SECURE_BOOT_SIGNING_FILES')))
       return
    for file in [d.getVar('SECURE_BOOT_SIGNING_FILES', True)]:
       subprocess.run(['sbsign', '--key', key, '--cert', cert, '--output', file.strip() + '.signed', file.strip()], check=True) 
