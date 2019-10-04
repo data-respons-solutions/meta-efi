@@ -2,7 +2,7 @@
 
 LICENSE = "MIT"
 
-IMAGE_INSTALL += "install-keys efi-shell systemd-boot"
+IMAGE_INSTALL += "install-keys efi-shell capsule-loader systemd-boot"
 IMAGE_CONTAINER_NO_DUMMY = "1"
 IMAGE_FSTYPES = "container"
 IMAGE_LINGUAS = ""
