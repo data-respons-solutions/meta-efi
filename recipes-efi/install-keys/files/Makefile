@@ -1,6 +1,6 @@
 ARCH ?= $(shell uname -m | sed s,i[3456789]86,ia32,)
-OBJS = efi-install.o
-TARGET = efi-install.efi
+OBJS = install-keys.o
+TARGET = install-keys.efi
 
 SYSROOT ?= 
 
@@ -22,7 +22,7 @@ LDFLAGS = -nostdlib -znocombreloc -T $(EFI_LDS) -shared \
 
 all: $(TARGET)
 
-efi-install.so: $(OBJS)
+install-keys.so: $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o $@ -lefi -lgnuefi
 
 %.efi: %.so
