@@ -14,7 +14,7 @@ SYSTEMD_BOOT_EFI ?= "/boot/${EFI_IMAGE_NAME}"
 
 do_compile() {
 	echo "${APPEND}" > ${WORKDIR}/cmdline.txt
-	objcopy \
+	${OBJCOPY} \
     --add-section .cmdline="${WORKDIR}/cmdline.txt" --change-section-vma .cmdline=0x30000 \
     --add-section .linux="${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}" --change-section-vma .linux=0x40000 \
     --add-section .initrd="${DEPLOY_DIR_IMAGE}/${INITRD_IMAGE}-${MACHINE}.${INITRAMFS_FSTYPES}" --change-section-vma .initrd=0x3000000 \
