@@ -40,4 +40,3 @@ index 38c7a22..69c57cb 100644
  	$(OPENSSL) x509 -req -in $< -CA DB.crt -CAkey DB.key -set_serial 1 -out $@ -days 365
 -- 
 2.7.5
-
