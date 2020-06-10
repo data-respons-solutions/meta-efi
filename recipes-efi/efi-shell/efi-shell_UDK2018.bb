@@ -2,10 +2,10 @@ SUMMARY = "EFI shell"
 DESCRIPTION = "Pre-compiled EFI shell binaries by tianocore EDK2 project"
 HOMEPAGE = "https://github.com/tianocore/tianocore.github.io/wiki/EDK-II"
 LICENSE = "BSD-2-Clause"
-LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/BSD-2-Clause;md5=8bef8e6712b1be5aa76af1ebde9d6378"
+LIC_FILES_CHKSUM = "file://License.txt;md5=243bd6447a4adc58484671b3811779ce"
 
 BRANCH ?= "UDK2018"
-SRC_URI = "git://github.com/tianocore/edk2.git;protocol=ssh;branch=${BRANCH}"
+SRC_URI = "git://git@github.com/tianocore/edk2.git;protocol=ssh;branch=${BRANCH}"
 SRCREV ?= "49fa59e82e4c6ea798f65fc4e5948eae63ad6e07"
 
 COMPATIBLE_HOST = '(i.86|x86_64)'
