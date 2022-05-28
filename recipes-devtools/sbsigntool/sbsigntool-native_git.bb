@@ -24,8 +24,9 @@ LIC_FILES_CHKSUM = "file://LICENSE.GPLv3;md5=9eef91148a9b14ec7f9df333daebc746 \
 
 # The original upstream is git://kernel.ubuntu.com/jk/sbsigntool but it has
 # not been maintained and many patches have been backported in this repo.
-SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https;name=sbsigntools \
-           git://github.com/rustyrussell/ccan.git;protocol=https;destsuffix=git/lib/ccan.git;name=ccan \
+BRANCH="master"
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/jejb/sbsigntools.git;protocol=https;name=sbsigntools;branch=${BRANCH} \
+           git://github.com/rustyrussell/ccan.git;protocol=https;destsuffix=git/lib/ccan.git;name=ccan;branch=${BRANCH} \
            file://0001-configure-Fixup-build-dependencies-for-cross-compili.patch \
           "
 
@@ -39,9 +40,9 @@ PV = "0.9.3-git${SRCPV}"
 
 S = "${WORKDIR}/git"
 
-inherit native autotools pkgconfig
+inherit autotools pkgconfig
 
-do_configure_prepend() {
+do_configure:prepend() {
 	cd ${S}
 
 	sed -i s#RECIPE_SYSROOT#${RECIPE_SYSROOT_NATIVE}#g configure.ac
@@ -83,3 +84,5 @@ EXTRA_OEMAKE = "\
               -I${STAGING_INCDIR_NATIVE} \
               -I${STAGING_INCDIR_NATIVE}/efi/${@efi_arch(d)}' \
     "
+    
+inherit native

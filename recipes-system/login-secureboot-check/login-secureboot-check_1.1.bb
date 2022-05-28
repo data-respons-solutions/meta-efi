@@ -7,7 +7,7 @@ SRC_URI = "\
 	file://30-secureboot-check.sh \
 "
 
-RDEPENDS_${PN} = "efitools"
+RDEPENDS:${PN} = "efitools"
 
 do_install() {
     install -d ${D}${sysconfdir}/profile.d/

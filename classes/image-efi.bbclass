@@ -10,7 +10,7 @@ do_image_efi[vardeps] +=  "IMAGE_LINK_NAME IMAGE_VERSION_SUFFIX KERNEL_IMAGETYPE
 EFI_IMAGE_NAME = "${IMAGE_LINK_NAME}${IMAGE_VERSION_SUFFIX}.efi"
 SECURE_BOOT_SIGNING_FILES += "${IMGDEPLOYDIR}/${EFI_IMAGE_NAME}"
 
-IMAGE_CMD_efi() {
+IMAGE_CMD:efi() {
 	echo "${APPEND}" > ${WORKDIR}/cmdline.txt
 	${OBJCOPY} \
     --add-section .cmdline="${WORKDIR}/cmdline.txt" --change-section-vma .cmdline=0x30000 \

@@ -47,8 +47,8 @@ do_deploy() {
 	install ${SECURE_BOOT_DB_CERT} ${DEPLOYDIR}/EFI/keys/
 	install ${SECURE_BOOT_DB_KEY} ${DEPLOYDIR}/EFI/keys/
 }
-FILES_${PN}-sig += "/*.sig"
-FILES_${PN}-cert += "/EFI/keys/*.crt"
-FILES_${PN}-key += "/EFI/keys/*.key"
+FILES:${PN}-sig += "/*.sig"
+FILES:${PN}-cert += "/EFI/keys/*.crt"
+FILES:${PN}-key += "/EFI/keys/*.key"
 
 addtask deploy after do_install

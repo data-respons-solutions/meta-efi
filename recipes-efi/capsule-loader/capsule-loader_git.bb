@@ -14,7 +14,7 @@ S = "${WORKDIR}/git"
 
 inherit deploy sbsign
 
-EXTRA_OEMAKE_append += "\
+EXTRA_OEMAKE:append = " \
 	SYSROOT=${STAGING_DIR_TARGET} \
 "
 
@@ -51,4 +51,4 @@ do_deploy() {
 	fi
 }
 
-FILES_${PN} = "/EFI/bin/capsule-loader.efi"
+FILES:${PN} = "/EFI/bin/capsule-loader.efi"

@@ -13,9 +13,9 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=e28f66b16cb46be47b20a4cdfe6e99a1"
 PV = "1.9.2+git${SRCPV}"
 
 DEPENDS += "gnu-efi openssl"
-
+BRANCH = "master"
 SRC_URI = "\
-	git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git \
+	git://git.kernel.org/pub/scm/linux/kernel/git/jejb/efitools.git;branch=${BRANCH} \
     file://Fix-for-the-cross-compilation.patch \
     file://Kill-all-the-build-warning-caused-by-implicit-declar.patch \
     file://Add-static-keyword-for-IsValidVariableHeader.patch \
@@ -36,8 +36,8 @@ EXTRA_OEMAKE = "\
     CRTPATH_PREFIX='${STAGING_DIR_TARGET}' \
 "
 
-EXTRA_OEMAKE_append_x86 += " ARCH=ia32"
-EXTRA_OEMAKE_append_x86-64 += " ARCH=x86_64"
+EXTRA_OEMAKE:append:x86 = " ARCH=ia32"
+EXTRA_OEMAKE:append:x86-64 = " ARCH=x86_64"
 
 do_compile() {
 	oe_runmake cert-to-efi-sig-list
@@ -62,6 +62,6 @@ do_install() {
 	install -m 0755 ${S}/efi-keytool ${D}${bindir}
 }
 
-RDEPENDS_${PN}_append += "\
+RDEPENDS:${PN}:append = " \
     parted mtools coreutils util-linux openssl libcrypto \
 "

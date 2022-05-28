@@ -2,7 +2,7 @@ SYSTEMD_BOOT_EFI_IMAGE = "${@bb.utils.contains('TARGET_ARCH', 'x86_64', 'bootx64
 
 inherit sbsign
 
-RDEPENDS_${PN}_remove = "virtual/systemd-bootconf"
+RDEPENDS:${PN}:remove = "virtual/systemd-bootconf"
 
 do_compile() {
 	ninja src/boot/efi/systemd-${SYSTEMD_BOOT_EFI_IMAGE}
@@ -33,4 +33,4 @@ do_deploy() {
 	fi
 }
 
-FILES_${PN} += "/EFI/BOOT/*"
+FILES:${PN} += "/EFI/BOOT/*"

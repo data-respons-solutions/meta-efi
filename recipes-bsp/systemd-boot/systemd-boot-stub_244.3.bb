@@ -5,13 +5,13 @@ LIC_FILES_CHKSUM = "file://LICENSE.GPL2;md5=751419260aa954499f7abaabaa882bbe \
 
 SRCREV = "b7ed902b2394f94e7f1fbe6c3194b5cd9a9429e6"
 SRCBRANCH = "v244-stable"
-SRC_URI = "git://github.com/systemd/systemd-stable.git;protocol=git;branch=${SRCBRANCH}"
+SRC_URI = "git://github.com/systemd/systemd-stable.git;protocol=https;branch=${SRCBRANCH}"
 
 SYSTEMD_BOOT_EFI_STUB ?= "invalid.stub"
-SYSTEMD_BOOT_EFI_STUB_x86-64 = "linuxx64.efi.stub"
-SYSTEMD_BOOT_EFI_STUB_x86 = "linuxia32.efi.stub"
-SYSTEMD_BOOT_EFI_STUB_aarch64 = "linuxaa64.efi.stub"
-SYSTEMD_BOOT_EFI_STUB_arm = "linuxarm.efi.stub"
+SYSTEMD_BOOT_EFI_STUB:x86-64 = "linuxx64.efi.stub"
+SYSTEMD_BOOT_EFI_STUB:x86 = "linuxia32.efi.stub"
+SYSTEMD_BOOT_EFI_STUB:aarch64 = "linuxaa64.efi.stub"
+SYSTEMD_BOOT_EFI_STUB:arm = "linuxarm.efi.stub"
 
 S = "${WORKDIR}/git"
 
@@ -19,10 +19,10 @@ DEPENDS = "intltool-native libcap util-linux gnu-efi gperf-native"
 inherit meson pkgconfig gettext
 inherit deploy
 
-LDFLAGS_prepend = "${@ " ".join(d.getVar('LD').split()[1:])} "
+LDFLAGS:prepend = "${@ " ".join(d.getVar('LD').split()[1:])} "
 
 do_write_config[vardeps] += "CC OBJCOPY"
-do_write_config_append() {
+do_write_config:append() {
     cat >${WORKDIR}/meson-${PN}.cross <<EOF
 [binaries]
 efi_cc = ${@meson_array('CC', d)}
@@ -40,7 +40,7 @@ EXTRA_OEMESON += "-Defi=true \
                   "
 
 # Imported from the old gummiboot recipe
-TUNE_CCARGS_remove = "-mfpmath=sse"
+TUNE_CCARGS:remove = "-mfpmath=sse"
 COMPATIBLE_HOST = "(x86-64|x86|arm|aarch64)"
 
 do_compile() {
@@ -59,6 +59,6 @@ do_deploy() {
 	install ${B}/src/boot/efi/${SYSTEMD_BOOT_EFI_STUB} ${DEPLOYDIR}
 }
 
-FILES_${PN}-dev += "${systemd_unitdir}/boot/efi/*"
+FILES:${PN}-dev += "${systemd_unitdir}/boot/efi/*"
 
 addtask deploy before do_build after do_compile

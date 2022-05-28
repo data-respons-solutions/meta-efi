@@ -43,4 +43,4 @@ do_deploy() {
 	fi
 }
 
-FILES_${PN} += "/boot/*"
+FILES:${PN} += "/boot/*"

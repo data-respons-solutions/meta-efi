@@ -2,7 +2,7 @@
 # Generate systemd boot loader.conf
 #
 
-ROOTFS_POSTPROCESS_COMMAND_append += " generate_systemd_boot_loader_conf; "
+ROOTFS_POSTPROCESS_COMMAND:append = " generate_systemd_boot_loader_conf; "
 
 SYSTEMD_BOOT_DEFAULT_TIMEOUT ?= "1"
 

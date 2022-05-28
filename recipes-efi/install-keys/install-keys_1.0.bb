@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 COMPATIBLE_HOST = '(i.86|x86_64)'
 
 DEPENDS += "gnu-efi"
-RDEPENDS_${PN} += "efi-keys-sig"
+RDEPENDS:${PN} += "efi-keys-sig"
 
 SRC_URI += "\
     file://install-keys.c \
@@ -22,7 +22,7 @@ SYSTEMD_BOOT_EFI = "/EFI/bin/install-keys.efi"
 
 S = "${WORKDIR}"
 CFLAGS = "-Wextra -Werror" 
-EXTRA_OEMAKE_append += "\
+EXTRA_OEMAKE += "\
 	SYSROOT=${STAGING_DIR_TARGET} \
 "
 
@@ -65,4 +65,4 @@ do_deploy() {
 	install ${S}/loader/entries/efi-install.conf ${DEPLOYDIR}/loader/entries/
 }
 
-FILES_${PN} = "/loader/entries/* /EFI/bin/install-keys.efi"
+FILES:${PN} = "/loader/entries/* /EFI/bin/install-keys.efi"

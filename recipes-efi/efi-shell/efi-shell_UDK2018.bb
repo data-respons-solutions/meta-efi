@@ -58,4 +58,4 @@ do_deploy() {
 	install ${S}/loader/entries/efi-shell.conf ${DEPLOYDIR}/loader/entries/
 }
 
-FILES_${PN} += "/loader/entries/* /EFI/bin/*"
+FILES:${PN} += "/loader/entries/* /EFI/bin/*"
