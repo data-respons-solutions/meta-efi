@@ -4,7 +4,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 inherit deploy sbsign
 
-SRCREV ?= "311205589a8cede503040bf47e6a1ae18c2c296a"
+SRCREV ?= "457b6033b3f43e612b6508f26d74ffc4fb742e7e"
 SRC_URI = "git://git@github.com/data-respons-solutions/drs-efi-utils.git;protocol=ssh;branch=main"
 
 DEPENDS += "gnu-efi"
