@@ -1,4 +1,4 @@
-inherit deploy sbsign
+inherit deploy sbsign image-artifact-names
 
 do_compile[depends] += " \
 	${INITRD_IMAGE}:do_image_complete \
@@ -17,7 +17,7 @@ do_compile() {
 	${OBJCOPY} \
     --add-section .cmdline="${WORKDIR}/cmdline.txt" --change-section-vma .cmdline=0x30000 \
     --add-section .linux="${DEPLOY_DIR_IMAGE}/${KERNEL_IMAGETYPE}" --change-section-vma .linux=0x40000 \
-    --add-section .initrd="${DEPLOY_DIR_IMAGE}/${INITRD_IMAGE}-${MACHINE}.${INITRAMFS_FSTYPES}" --change-section-vma .initrd=0x3000000 \
+    --add-section .initrd="${DEPLOY_DIR_IMAGE}/${INITRD_IMAGE}-${MACHINE}${IMAGE_NAME_SUFFIX}.${INITRAMFS_FSTYPES}" --change-section-vma .initrd=0x3000000 \
     ${STAGING_DIR_TARGET}/${systemd_unitdir}/boot/efi/linux.efi.stub \
     ${WORKDIR}/${EFI_IMAGE_NAME}
 }
